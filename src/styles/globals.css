@@ -1,0 +1,143 @@
+/* =============================================================================
+   TRIVENI DESIGN SYSTEM — GLOBAL STYLESHEET (entry point)
+   -----------------------------------------------------------------------------
+   Load order matters:
+     1. Tailwind core
+     2. Design tokens   (raw + semantic + system CSS variables)
+     3. Theme mapping   (tokens -> Tailwind utility namespaces)
+     4. Base layer      (element defaults, a11y, reduced motion)
+   ========================================================================== */
+
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./theme.css";
+
+/* Dark theme is opt-in via [data-theme="dark"] (defined in tokens.css).
+   Register the variant so `dark:` utilities work if ever needed. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* =============================================================================
+   BASE LAYER
+   ========================================================================== */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--leading-normal);
+    font-weight: var(--weight-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Headings default to the display/heading family */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--ink);
+    font-weight: var(--weight-heading);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* -------------------------------------------------------------------------
+     ACCESSIBILITY — visible, consistent focus on every interactive control
+     ------------------------------------------------------------------------ */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+  /* Hide the default outline only when a custom ring is provided */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: var(--emerald-100);
+    color: var(--navy-800);
+  }
+
+  /* Pleasant, on-brand scrollbar (non-intrusive) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--slate-300) transparent;
+  }
+
+  /* -------------------------------------------------------------------------
+     MOTION — respect user preference globally
+     ------------------------------------------------------------------------ */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* =============================================================================
+   COMPONENT/UTILITY HELPERS
+   ========================================================================== */
+@layer utilities {
+  /* Apply to any block containing Nepali (Devanagari) text */
+  .font-nepali,
+  [lang="ne"] {
+    font-family: var(--font-nepali);
+  }
+
+  /* Centered page container honoring the design max-width + responsive gutter */
+  .container-page {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--sp-2);
+  }
+  @media (min-width: 768px) {
+    .container-page {
+      padding-inline: var(--sp-4);
+    }
+  }
+
+  /* Reusable focus ring for custom controls */
+  .focus-ring {
+    outline: none;
+  }
+  .focus-ring:focus-visible {
+    box-shadow: var(--shadow-focus);
+  }
+
+  /* Screen-reader-only */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}

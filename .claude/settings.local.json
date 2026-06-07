@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Name node -Force -ErrorAction SilentlyContinue)",
+      "Bash(xargs cat)",
+      "Bash(node -e \"console.log\\('ssr', require\\('./node_modules/@supabase/ssr/package.json'\\).version\\); console.log\\('supabase-js', require\\('./node_modules/@supabase/supabase-js/package.json'\\).version\\)\")",
+      "Bash(xargs grep -A2 \"export declare function createServerClient\")",
+      "Bash(ls -la .env.local)",
+      "Bash(grep -rl \"insert into auth.users\\\\|seed.*admin\\\\|password\" supabase/)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"=== typecheck exit: $? ===\")",
+      "Bash(npx tsx *)",
+      "Bash(echo \"exit=$?\")"
+    ]
+  }
+}

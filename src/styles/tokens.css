@@ -1,0 +1,202 @@
+/* =============================================================================
+   TRIVENI DESIGN SYSTEM — DESIGN TOKENS
+   -----------------------------------------------------------------------------
+   Three layers:
+     1. RAW TOKENS      — the brand palette + primitive scales (the "ingredients")
+     2. SEMANTIC TOKENS — meaning-based aliases used by components (--bg, --ink…)
+     3. SYSTEM TOKENS   — spacing, radius, elevation, motion, typography
+
+   RULE: Components must consume SEMANTIC / SYSTEM tokens (via Tailwind utilities
+   mapped in theme.css), never RAW colors directly. Raw tokens exist so the
+   semantic layer — and future themes — can be re-pointed in one place.
+   ========================================================================== */
+
+:root {
+  /* ===========================================================================
+     1. RAW TOKENS — BRAND PALETTE
+     ======================================================================== */
+
+  /* --- Navy (structure, ink, dark surfaces) ----------------------------- */
+  --navy-900: #0b1120;
+  --navy-800: #0f172a;
+  --navy-700: #1e293b;
+  --navy-600: #334155;
+  --navy-500: #475569;
+  --navy-400: #64748b;
+
+  /* --- Emerald (primary action, growth, optimism) ----------------------- */
+  --emerald-700: #047857;
+  --emerald-600: #059669;
+  --emerald-500: #10b981;
+  --emerald-400: #34d399;
+  --emerald-300: #6ee7b7;
+  --emerald-100: #d1fae5;
+
+  /* --- Gold (highlight, recognition, energy) ---------------------------- */
+  --gold-700: #b45309;
+  --gold-600: #d97706;
+  --gold-500: #f59e0b;
+  --gold-400: #fbbf24;
+  --gold-300: #fcd34d;
+  --gold-100: #fef3c7;
+
+  /* --- Slate (neutrals, backgrounds, lines) ----------------------------- */
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-600: #475569;
+
+  /* --- Functional (status) — derived from palette, AA-safe -------------- */
+  --success-500: var(--emerald-600);
+  --success-100: var(--emerald-100);
+  --warning-500: var(--gold-600);
+  --warning-100: var(--gold-100);
+  --danger-500: #dc2626;
+  --danger-100: #fee2e2;
+  --info-500: #0284c7;
+  --info-100: #e0f2fe;
+
+  /* Absolute reference */
+  --white: #ffffff;
+  --black: #000000;
+
+  /* ===========================================================================
+     2. SEMANTIC TOKENS  (LIGHT — default theme)
+     -----------------------------------------------------------------------
+     The canonical names from the design spec. Components reference these.
+     ======================================================================== */
+
+  --bg: var(--slate-50);        /* page background                          */
+  --surface: var(--white);      /* cards, sheets, raised panels            */
+  --ink: var(--navy-800);       /* primary text / headings                 */
+  --soft: var(--navy-400);      /* secondary / muted text                  */
+  --primary: var(--emerald-500); /* primary brand / actions                */
+  --accent: var(--gold-500);    /* highlight / recognition                 */
+  --line: var(--slate-200);     /* borders, dividers, inputs               */
+
+  /* --- Extended semantic set (derived, for component states) ------------ */
+  --bg-subtle: var(--slate-100);
+  --surface-2: var(--slate-50);
+  --ink-inverse: var(--white);
+  --primary-hover: var(--emerald-600);
+  --primary-active: var(--emerald-700);
+  --primary-soft: var(--emerald-100);
+  /* On-primary text — NEVER white on emerald (a11y rule) */
+  --on-primary: var(--navy-800);
+  --accent-hover: var(--gold-600);
+  --accent-active: var(--gold-700);
+  --accent-soft: var(--gold-100);
+  /* On-accent text — NEVER white on gold (a11y rule) */
+  --on-accent: var(--navy-800);
+  --line-strong: var(--slate-300);
+
+  /* Focus ring — high-contrast, used on all interactive controls */
+  --ring: var(--emerald-600);
+  --ring-offset: var(--bg);
+
+  /* Status semantic aliases */
+  --success: var(--success-500);
+  --success-bg: var(--success-100);
+  --warning: var(--warning-500);
+  --warning-bg: var(--warning-100);
+  --danger: var(--danger-500);
+  --danger-bg: var(--danger-100);
+  --on-danger: var(--white); /* white IS allowed on red */
+  --info: var(--info-500);
+  --info-bg: var(--info-100);
+
+  /* ===========================================================================
+     3. SYSTEM TOKENS
+     ======================================================================== */
+
+  /* --- Typography: families ------------------------------------------- */
+  /* font-* CSS vars are provided by next/font in layout.tsx:
+     --font-bricolage, --font-jakarta, --font-devanagari                  */
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", system-ui, sans-serif;
+  --font-heading: var(--font-bricolage), "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-nepali: var(--font-devanagari), "Noto Sans Devanagari", sans-serif;
+
+  /* --- Typography: fluid sizes (clamp: min, preferred, max) ------------ */
+  --text-display: clamp(2.75rem, 1.6rem + 5.2vw, 5rem);   /* 44 → 80 */
+  --text-h1: clamp(2.25rem, 1.5rem + 3.2vw, 3.5rem);      /* 36 → 56 */
+  --text-h2: clamp(1.75rem, 1.25rem + 2.1vw, 2.5rem);     /* 28 → 40 */
+  --text-h3: clamp(1.375rem, 1.1rem + 1.1vw, 1.75rem);    /* 22 → 28 */
+  --text-lead: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);   /* 18 → 22 */
+  --text-body: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);   /* 16 → 17 */
+  --text-caption: 0.875rem;                               /* 14      */
+
+  /* --- Typography: weights & line-heights ----------------------------- */
+  --weight-display: 800;
+  --weight-heading: 700;
+  --weight-semibold: 600;
+  --weight-medium: 500;
+  --weight-body: 400;
+
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+
+  /* --- Spacing scale (8pt rhythm) ------------------------------------- */
+  --sp-1: 0.5rem;   /*  8px */
+  --sp-2: 1rem;     /* 16px */
+  --sp-3: 1.5rem;   /* 24px */
+  --sp-4: 2rem;     /* 32px */
+  --sp-5: 3rem;     /* 48px */
+  --sp-6: 5rem;     /* 80px */
+
+  /* --- Radius --------------------------------------------------------- */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+
+  /* --- Elevation (subtle, tinted with navy — no heavy glassmorphism) -- */
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.06),
+               0 1px 3px 0 rgb(15 23 42 / 0.05);
+  --shadow-md: 0 4px 6px -2px rgb(15 23 42 / 0.07),
+               0 10px 20px -4px rgb(15 23 42 / 0.08);
+  --shadow-lg: 0 12px 24px -8px rgb(15 23 42 / 0.12),
+               0 24px 48px -12px rgb(15 23 42 / 0.14);
+  --shadow-focus: 0 0 0 3px rgb(5 150 105 / 0.35);
+
+  /* --- Motion --------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 0.2s;
+  --duration-base: 0.45s;
+  --duration-slow: 0.8s;
+
+  /* --- Layout --------------------------------------------------------- */
+  --container-max: 80rem;   /* 1280px */
+  --container-prose: 46rem; /* 736px  */
+  --header-height: 4.5rem;  /* 72px   */
+}
+
+/* =============================================================================
+   FUTURE THEME HOOK
+   -----------------------------------------------------------------------------
+   A dark theme only needs to re-point the SEMANTIC layer; raw + system tokens
+   stay identical. Enable later by toggling [data-theme="dark"] on <html>.
+   ========================================================================== */
+[data-theme="dark"] {
+  --bg: var(--navy-900);
+  --bg-subtle: var(--navy-800);
+  --surface: var(--navy-800);
+  --surface-2: var(--navy-700);
+  --ink: var(--slate-50);
+  --soft: var(--slate-400);
+  --line: var(--navy-700);
+  --line-strong: var(--navy-600);
+  --ring-offset: var(--navy-900);
+  /* primary/accent and the on-* rules stay the same — navy text on emerald/gold
+     remains correct in dark mode too. */
+}
