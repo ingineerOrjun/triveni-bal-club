@@ -14,6 +14,7 @@ import {
   FileBadge,
   Lightbulb,
   MessageSquare,
+  Vote,
   Settings,
   ShieldCheck,
   LogOut,
@@ -45,6 +46,7 @@ const NAV = [
   { label: "Certificates", href: "/portal/certificates", icon: FileBadge },
   { label: "Suggestions", href: "/portal/suggestions", icon: Lightbulb },
   { label: "My Ideas", href: "/portal/my-suggestions", icon: MessageSquare },
+  { label: "Elections", href: "/portal/elections", icon: Vote },
   { label: "Profile", href: "/portal/profile", icon: UserRound },
   { label: "Account", href: "/settings/account", icon: Settings },
 ];

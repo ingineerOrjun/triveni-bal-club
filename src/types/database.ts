@@ -39,6 +39,36 @@ export type SuggestionVisibility = "private" | "members" | "public";
 export type SuggestionPriority = "low" | "medium" | "high" | "critical";
 export type MediaStatus = "active" | "archived" | "deleted";
 export type MediaVisibility = "public" | "private";
+export type IoStatus =
+  | "queued"
+  | "validating"
+  | "ready"
+  | "processing"
+  | "completed"
+  | "failed"
+  | "cancelled";
+export type ImportMode =
+  | "insert"
+  | "upsert"
+  | "update"
+  | "ignore_duplicates"
+  | "dry_run";
+export type CmsPageStatus = "draft" | "published" | "scheduled" | "archived";
+export type ElectionStatus =
+  | "draft"
+  | "nominations"
+  | "voting"
+  | "closed"
+  | "results_published"
+  | "archived";
+export type NominationStatus =
+  | "draft"
+  | "submitted"
+  | "under_review"
+  | "approved"
+  | "rejected"
+  | "withdrawn";
+export type CommitteeMemberStatus = "active" | "resigned" | "replaced";
 
 /* ------------------------------- users ----------------------------------- */
 export type UsersRow = {
@@ -864,6 +894,471 @@ export type GalleryPhotoInsert = {
 };
 export type GalleryPhotoUpdate = Partial<GalleryPhotoInsert>;
 
+/* --------------------------- import / export ------------------------------ */
+export type ImportTemplateRow = {
+  id: string;
+  module: string;
+  name: string;
+  mapping: Record<string, unknown>;
+  is_default: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string | null;
+};
+export type ImportTemplateInsert = {
+  id?: string;
+  module: string;
+  name: string;
+  mapping?: Record<string, unknown>;
+  is_default?: boolean;
+  created_by?: string | null;
+  created_at?: string;
+  updated_at?: string | null;
+};
+export type ImportTemplateUpdate = Partial<ImportTemplateInsert>;
+
+export type ImportJobRow = {
+  id: string;
+  module: string;
+  status: IoStatus;
+  mode: ImportMode;
+  file_name: string | null;
+  total_rows: number;
+  valid_rows: number;
+  error_rows: number;
+  imported_rows: number;
+  skipped_rows: number;
+  template_id: string | null;
+  error_summary: string | null;
+  rollback_available: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string | null;
+  finished_at: string | null;
+};
+export type ImportJobInsert = {
+  id?: string;
+  module: string;
+  status?: IoStatus;
+  mode?: ImportMode;
+  file_name?: string | null;
+  total_rows?: number;
+  valid_rows?: number;
+  error_rows?: number;
+  imported_rows?: number;
+  skipped_rows?: number;
+  template_id?: string | null;
+  error_summary?: string | null;
+  rollback_available?: boolean;
+  created_by?: string | null;
+  created_at?: string;
+  updated_at?: string | null;
+  finished_at?: string | null;
+};
+export type ImportJobUpdate = Partial<ImportJobInsert>;
+
+export type ImportRowRow = {
+  id: string;
+  job_id: string;
+  row_number: number;
+  data: Record<string, unknown>;
+  status: string;
+  created_at: string;
+};
+export type ImportRowInsert = {
+  id?: string;
+  job_id: string;
+  row_number: number;
+  data?: Record<string, unknown>;
+  status?: string;
+  created_at?: string;
+};
+export type ImportRowUpdate = Partial<ImportRowInsert>;
+
+export type ValidationErrorRow = {
+  id: string;
+  job_id: string;
+  row_number: number;
+  field: string | null;
+  value: string | null;
+  rule: string | null;
+  message: string;
+  suggestion: string | null;
+  created_at: string;
+};
+export type ValidationErrorInsert = {
+  id?: string;
+  job_id: string;
+  row_number: number;
+  field?: string | null;
+  value?: string | null;
+  rule?: string | null;
+  message: string;
+  suggestion?: string | null;
+  created_at?: string;
+};
+export type ValidationErrorUpdate = Partial<ValidationErrorInsert>;
+
+export type ColumnMappingRow = { id: string; template_id: string; source: string; target: string };
+export type ColumnMappingInsert = { id?: string; template_id: string; source: string; target: string };
+export type ColumnMappingUpdate = Partial<ColumnMappingInsert>;
+
+export type ExportTemplateRow = {
+  id: string;
+  module: string;
+  name: string;
+  filters: Record<string, unknown>;
+  format: string;
+  is_default: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string | null;
+};
+export type ExportTemplateInsert = {
+  id?: string;
+  module: string;
+  name: string;
+  filters?: Record<string, unknown>;
+  format?: string;
+  is_default?: boolean;
+  created_by?: string | null;
+  created_at?: string;
+  updated_at?: string | null;
+};
+export type ExportTemplateUpdate = Partial<ExportTemplateInsert>;
+
+export type ExportJobRow = {
+  id: string;
+  module: string;
+  status: IoStatus;
+  format: string;
+  filters: Record<string, unknown>;
+  row_count: number;
+  download_count: number;
+  created_by: string | null;
+  created_at: string;
+  finished_at: string | null;
+};
+export type ExportJobInsert = {
+  id?: string;
+  module: string;
+  status?: IoStatus;
+  format?: string;
+  filters?: Record<string, unknown>;
+  row_count?: number;
+  download_count?: number;
+  created_by?: string | null;
+  created_at?: string;
+  finished_at?: string | null;
+};
+export type ExportJobUpdate = Partial<ExportJobInsert>;
+
+export type IoLogRow = {
+  id: string;
+  job_id: string;
+  level: string;
+  message: string;
+  created_at: string;
+};
+export type IoLogInsert = {
+  id?: string;
+  job_id: string;
+  level?: string;
+  message: string;
+  created_at?: string;
+};
+export type IoLogUpdate = Partial<IoLogInsert>;
+
+/* --------------------------------- CMS ------------------------------------ */
+export type CmsPageRow = {
+  id: string;
+  slug: string;
+  title: string;
+  status: CmsPageStatus;
+  blocks: unknown[];
+  seo: Record<string, unknown>;
+  is_system: boolean;
+  version: number;
+  scheduled_at: string | null;
+  published_at: string | null;
+  created_by: string | null;
+  updated_by: string | null;
+  created_at: string;
+  updated_at: string | null;
+};
+export type CmsPageInsert = {
+  id?: string;
+  slug: string;
+  title: string;
+  status?: CmsPageStatus;
+  blocks?: unknown[];
+  seo?: Record<string, unknown>;
+  is_system?: boolean;
+  version?: number;
+  scheduled_at?: string | null;
+  published_at?: string | null;
+  created_by?: string | null;
+  updated_by?: string | null;
+  created_at?: string;
+  updated_at?: string | null;
+};
+export type CmsPageUpdate = Partial<CmsPageInsert>;
+
+export type CmsPageVersionRow = {
+  id: string;
+  page_id: string;
+  version: number;
+  title: string;
+  blocks: unknown[];
+  seo: Record<string, unknown>;
+  note: string | null;
+  created_by: string | null;
+  created_at: string;
+};
+export type CmsPageVersionInsert = {
+  id?: string;
+  page_id: string;
+  version: number;
+  title: string;
+  blocks?: unknown[];
+  seo?: Record<string, unknown>;
+  note?: string | null;
+  created_by?: string | null;
+  created_at?: string;
+};
+export type CmsPageVersionUpdate = Partial<CmsPageVersionInsert>;
+
+export type CmsMenuRow = {
+  id: string;
+  location: string;
+  name: string;
+  created_at: string;
+  updated_at: string | null;
+};
+export type CmsMenuInsert = {
+  id?: string;
+  location: string;
+  name: string;
+  created_at?: string;
+  updated_at?: string | null;
+};
+export type CmsMenuUpdate = Partial<CmsMenuInsert>;
+
+export type CmsMenuItemRow = {
+  id: string;
+  menu_id: string;
+  parent_id: string | null;
+  label: string;
+  href: string;
+  icon: string | null;
+  sort_order: number;
+  new_tab: boolean;
+  visible: boolean;
+  created_at: string;
+};
+export type CmsMenuItemInsert = {
+  id?: string;
+  menu_id: string;
+  parent_id?: string | null;
+  label: string;
+  href: string;
+  icon?: string | null;
+  sort_order?: number;
+  new_tab?: boolean;
+  visible?: boolean;
+  created_at?: string;
+};
+export type CmsMenuItemUpdate = Partial<CmsMenuItemInsert>;
+
+/* ------------------------------ elections --------------------------------- */
+export type ElectionTermRow = {
+  id: string;
+  label: string;
+  starts_on: string | null;
+  ends_on: string | null;
+  is_current: boolean;
+  created_at: string;
+};
+export type ElectionTermInsert = {
+  id?: string;
+  label: string;
+  starts_on?: string | null;
+  ends_on?: string | null;
+  is_current?: boolean;
+  created_at?: string;
+};
+export type ElectionTermUpdate = Partial<ElectionTermInsert>;
+
+export type ElectionRow = {
+  id: string;
+  term_id: string | null;
+  slug: string;
+  title: string;
+  description: string | null;
+  status: ElectionStatus;
+  nominations_open_at: string | null;
+  nominations_close_at: string | null;
+  voting_open_at: string | null;
+  voting_close_at: string | null;
+  created_by: string | null;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string | null;
+};
+export type ElectionInsert = {
+  id?: string;
+  term_id?: string | null;
+  slug: string;
+  title: string;
+  description?: string | null;
+  status?: ElectionStatus;
+  nominations_open_at?: string | null;
+  nominations_close_at?: string | null;
+  voting_open_at?: string | null;
+  voting_close_at?: string | null;
+  created_by?: string | null;
+  published_at?: string | null;
+  created_at?: string;
+  updated_at?: string | null;
+};
+export type ElectionUpdate = Partial<ElectionInsert>;
+
+export type PositionRow = {
+  id: string;
+  election_id: string;
+  title: string;
+  description: string | null;
+  seats: number;
+  sort_order: number;
+  created_at: string;
+};
+export type PositionInsert = {
+  id?: string;
+  election_id: string;
+  title: string;
+  description?: string | null;
+  seats?: number;
+  sort_order?: number;
+  created_at?: string;
+};
+export type PositionUpdate = Partial<PositionInsert>;
+
+export type CandidateNominationRow = {
+  id: string;
+  election_id: string;
+  position_id: string;
+  member_id: string;
+  slogan: string | null;
+  manifesto: string | null;
+  vision: string | null;
+  goals: string | null;
+  photo_url: string | null;
+  banner_url: string | null;
+  status: NominationStatus;
+  review_note: string | null;
+  reviewed_by: string | null;
+  created_at: string;
+  updated_at: string | null;
+};
+export type CandidateNominationInsert = {
+  id?: string;
+  election_id: string;
+  position_id: string;
+  member_id: string;
+  slogan?: string | null;
+  manifesto?: string | null;
+  vision?: string | null;
+  goals?: string | null;
+  photo_url?: string | null;
+  banner_url?: string | null;
+  status?: NominationStatus;
+  review_note?: string | null;
+  reviewed_by?: string | null;
+  created_at?: string;
+  updated_at?: string | null;
+};
+export type CandidateNominationUpdate = Partial<CandidateNominationInsert>;
+
+export type VoteRow = {
+  id: string;
+  election_id: string;
+  position_id: string;
+  candidate_id: string;
+  created_at: string;
+};
+export type VoteInsert = {
+  id?: string;
+  election_id: string;
+  position_id: string;
+  candidate_id: string;
+  created_at?: string;
+};
+export type VoteUpdate = Partial<VoteInsert>;
+
+export type VoteReceiptRow = {
+  id: string;
+  election_id: string;
+  voter_id: string;
+  receipt_code: string;
+  positions_voted: number;
+  created_at: string;
+};
+export type VoteReceiptInsert = {
+  id?: string;
+  election_id: string;
+  voter_id: string;
+  receipt_code: string;
+  positions_voted?: number;
+  created_at?: string;
+};
+export type VoteReceiptUpdate = Partial<VoteReceiptInsert>;
+
+export type ResultSnapshotRow = {
+  id: string;
+  election_id: string;
+  data: Record<string, unknown>;
+  published: boolean;
+  created_by: string | null;
+  created_at: string;
+};
+export type ResultSnapshotInsert = {
+  id?: string;
+  election_id: string;
+  data?: Record<string, unknown>;
+  published?: boolean;
+  created_by?: string | null;
+  created_at?: string;
+};
+export type ResultSnapshotUpdate = Partial<ResultSnapshotInsert>;
+
+export type CommitteeAssignmentRow = {
+  id: string;
+  election_id: string | null;
+  term_id: string | null;
+  position_id: string | null;
+  member_id: string;
+  role_title: string;
+  status: CommitteeMemberStatus;
+  started_on: string;
+  ended_on: string | null;
+  sort_order: number;
+  created_at: string;
+};
+export type CommitteeAssignmentInsert = {
+  id?: string;
+  election_id?: string | null;
+  term_id?: string | null;
+  position_id?: string | null;
+  member_id: string;
+  role_title: string;
+  status?: CommitteeMemberStatus;
+  started_on?: string;
+  ended_on?: string | null;
+  sort_order?: number;
+  created_at?: string;
+};
+export type CommitteeAssignmentUpdate = Partial<CommitteeAssignmentInsert>;
+
 /* ------------------------------- schema ----------------------------------- */
 export type Database = {
   public: {
@@ -1084,6 +1579,132 @@ export type Database = {
         Update: GalleryPhotoUpdate;
         Relationships: [];
       };
+      import_templates: {
+        Row: ImportTemplateRow;
+        Insert: ImportTemplateInsert;
+        Update: ImportTemplateUpdate;
+        Relationships: [];
+      };
+      import_jobs: {
+        Row: ImportJobRow;
+        Insert: ImportJobInsert;
+        Update: ImportJobUpdate;
+        Relationships: [];
+      };
+      import_rows: {
+        Row: ImportRowRow;
+        Insert: ImportRowInsert;
+        Update: ImportRowUpdate;
+        Relationships: [];
+      };
+      validation_errors: {
+        Row: ValidationErrorRow;
+        Insert: ValidationErrorInsert;
+        Update: ValidationErrorUpdate;
+        Relationships: [];
+      };
+      column_mappings: {
+        Row: ColumnMappingRow;
+        Insert: ColumnMappingInsert;
+        Update: ColumnMappingUpdate;
+        Relationships: [];
+      };
+      export_templates: {
+        Row: ExportTemplateRow;
+        Insert: ExportTemplateInsert;
+        Update: ExportTemplateUpdate;
+        Relationships: [];
+      };
+      export_jobs: {
+        Row: ExportJobRow;
+        Insert: ExportJobInsert;
+        Update: ExportJobUpdate;
+        Relationships: [];
+      };
+      import_logs: {
+        Row: IoLogRow;
+        Insert: IoLogInsert;
+        Update: IoLogUpdate;
+        Relationships: [];
+      };
+      export_logs: {
+        Row: IoLogRow;
+        Insert: IoLogInsert;
+        Update: IoLogUpdate;
+        Relationships: [];
+      };
+      cms_pages: {
+        Row: CmsPageRow;
+        Insert: CmsPageInsert;
+        Update: CmsPageUpdate;
+        Relationships: [];
+      };
+      cms_page_versions: {
+        Row: CmsPageVersionRow;
+        Insert: CmsPageVersionInsert;
+        Update: CmsPageVersionUpdate;
+        Relationships: [];
+      };
+      cms_menus: {
+        Row: CmsMenuRow;
+        Insert: CmsMenuInsert;
+        Update: CmsMenuUpdate;
+        Relationships: [];
+      };
+      cms_menu_items: {
+        Row: CmsMenuItemRow;
+        Insert: CmsMenuItemInsert;
+        Update: CmsMenuItemUpdate;
+        Relationships: [];
+      };
+      election_terms: {
+        Row: ElectionTermRow;
+        Insert: ElectionTermInsert;
+        Update: ElectionTermUpdate;
+        Relationships: [];
+      };
+      elections: {
+        Row: ElectionRow;
+        Insert: ElectionInsert;
+        Update: ElectionUpdate;
+        Relationships: [];
+      };
+      positions: {
+        Row: PositionRow;
+        Insert: PositionInsert;
+        Update: PositionUpdate;
+        Relationships: [];
+      };
+      candidate_nominations: {
+        Row: CandidateNominationRow;
+        Insert: CandidateNominationInsert;
+        Update: CandidateNominationUpdate;
+        Relationships: [];
+      };
+      votes: {
+        Row: VoteRow;
+        Insert: VoteInsert;
+        Update: VoteUpdate;
+        Relationships: [];
+      };
+      vote_receipts: {
+        Row: VoteReceiptRow;
+        Insert: VoteReceiptInsert;
+        Update: VoteReceiptUpdate;
+        Relationships: [];
+      };
+      result_snapshots: {
+        Row: ResultSnapshotRow;
+        Insert: ResultSnapshotInsert;
+        Update: ResultSnapshotUpdate;
+        Relationships: [];
+      };
+      committee_assignments: {
+        Row: CommitteeAssignmentRow;
+        Insert: CommitteeAssignmentInsert;
+        Update: CommitteeAssignmentUpdate;
+        Relationships: [];
+      };
     };
     Views: Record<never, never>;
     Functions: {
@@ -1127,6 +1748,14 @@ export type Database = {
       suggestion_status: SuggestionStatus;
       suggestion_visibility: SuggestionVisibility;
       suggestion_priority: SuggestionPriority;
+      media_status: MediaStatus;
+      media_visibility: MediaVisibility;
+      io_status: IoStatus;
+      import_mode: ImportMode;
+      cms_page_status: CmsPageStatus;
+      election_status: ElectionStatus;
+      nomination_status: NominationStatus;
+      committee_member_status: CommitteeMemberStatus;
     };
     CompositeTypes: Record<never, never>;
   };

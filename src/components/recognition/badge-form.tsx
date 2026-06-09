@@ -125,13 +125,11 @@ export function BadgeForm({
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="image_url">Image URL (optional)</Label>
-          <Input
-            id="image_url"
+          <MediaField
             name="image_url"
-            type="url"
+            label="Image (optional)"
             defaultValue={values?.image_url}
-            aria-invalid={Boolean(state.fieldErrors?.image_url)}
+            help="Choose from the Media Library, or upload a new image."
           />
           <FieldError id="image_url" message={state.fieldErrors?.image_url} />
         </div>

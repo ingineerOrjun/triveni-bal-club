@@ -8,6 +8,8 @@ import type {
   MediaTagRow,
   MediaUsageRow,
   MediaCollectionRow,
+  MediaStatus,
+  MediaVisibility,
 } from "@/types/database";
 
 export type { MediaFileRow, MediaFolderRow };
@@ -55,11 +57,11 @@ export async function listFiles(
   }
 
   let q = supabase.from("media_files").select("*", { count: "exact" });
-  q = q.eq("status", filters.status ?? "active");
+  q = q.eq("status", (filters.status ?? "active") as MediaStatus);
   if (fileIds) q = q.in("id", fileIds);
   if (filters.folderId === "root") q = q.is("folder_id", null);
   else if (filters.folderId) q = q.eq("folder_id", filters.folderId);
-  if (filters.visibility) q = q.eq("visibility", filters.visibility);
+  if (filters.visibility) q = q.eq("visibility", filters.visibility as MediaVisibility);
   if (filters.kind === "image") q = q.ilike("mime_type", "image/%");
   else if (filters.kind === "pdf") q = q.eq("mime_type", "application/pdf");
   if (filters.q)

@@ -24,6 +24,7 @@ const COLUMNS: FooterColumn[] = [
       { label: "Achievements", href: "/achievements" },
       { label: "Hall of Fame", href: "/hall-of-fame" },
       { label: "Student Voice", href: "/student-voice" },
+      { label: "Elections", href: "/elections" },
       { label: "Magazine", href: "/magazine" },
       { label: "Contact", href: "/contact" },
     ],

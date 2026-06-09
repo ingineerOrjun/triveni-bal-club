@@ -30,6 +30,10 @@ Migrations (run in order):
 19. `0019_media_storage.sql` — Storage buckets (media-public/private, gallery, avatars, certificates, documents) + storage RLS + `media_in_use()` delete-guard.
 20. `0020_media_rls.sql` — RLS for all media tables (members none; moderators upload/edit; admins full).
 21. `0021_gallery_cms.sql` — `gallery_albums` + `gallery_photos` (Media-Library-backed) + RLS.
+22. `0022_import_export.sql` — Import/Export engine: `import_jobs`, `import_rows`, `import_templates`, `export_jobs`, `export_templates`, `import_logs`, `export_logs`, `column_mappings`, `validation_errors` (+ enums, admin-only RLS).
+23. `0023_cms.sql` — Visual CMS: `cms_pages`, `cms_page_versions`, `cms_menus`, `cms_menu_items` (+ `cms_page_status` enum; published pages public, staff manage).
+24. `0024_elections.sql` — Elections: `election_terms`, `elections`, `positions`, `candidate_nominations`, `votes` (anonymous), `vote_receipts`, `result_snapshots`, `committee_assignments` (+ enums).
+25. `0025_election_functions.sql` — secret-ballot `cast_vote()`, `get_election_results()`, `election_turnout()`, `has_voted()` (SECURITY DEFINER) + RLS (votes table has NO direct access).
 
 ## Enable the access-token hook (one-time, dashboard)
 
