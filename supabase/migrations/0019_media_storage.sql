@@ -23,55 +23,74 @@ on conflict (id) do nothing;
 --   delete : admin only
 -- ----------------------------------------------------------------------------
 do $$
-declare
-  public_buckets text[]  := array['media-public','gallery','avatars'];
-  managed_buckets text[] := array['media-public','gallery','avatars','media-private','certificates','documents'];
 begin
-  -- public read
   begin
-    execute $p$
-      create policy "media public read" on storage.objects
+    create policy "media public read" on storage.objects
       for select to anon, authenticated
-      using (bucket_id = any($1))
-    $p$ using public_buckets;
-  exception when duplicate_object then null; end;
+      using (
+        bucket_id in ('media-public','gallery','avatars')
+      );
+  exception when duplicate_object then null;
+  end;
 
-  -- staff read of private managed buckets
   begin
-    execute $p$
-      create policy "media staff read" on storage.objects
+    create policy "media staff read" on storage.objects
       for select to authenticated
-      using (bucket_id = any($1) and public.is_staff())
-    $p$ using managed_buckets;
-  exception when duplicate_object then null; end;
+      using (
+        bucket_id in (
+          'media-public','gallery','avatars',
+          'media-private','certificates','documents'
+        )
+        and public.is_staff()
+      );
+  exception when duplicate_object then null;
+  end;
 
-  -- staff upload
   begin
-    execute $p$
-      create policy "media staff insert" on storage.objects
+    create policy "media staff insert" on storage.objects
       for insert to authenticated
-      with check (bucket_id = any($1) and public.is_staff())
-    $p$ using managed_buckets;
-  exception when duplicate_object then null; end;
+      with check (
+        bucket_id in (
+          'media-public','gallery','avatars',
+          'media-private','certificates','documents'
+        )
+        and public.is_staff()
+      );
+  exception when duplicate_object then null;
+  end;
 
-  -- staff update (replace / move)
   begin
-    execute $p$
-      create policy "media staff update" on storage.objects
+    create policy "media staff update" on storage.objects
       for update to authenticated
-      using (bucket_id = any($1) and public.is_staff())
-      with check (bucket_id = any($1) and public.is_staff())
-    $p$ using managed_buckets;
-  exception when duplicate_object then null; end;
+      using (
+        bucket_id in (
+          'media-public','gallery','avatars',
+          'media-private','certificates','documents'
+        )
+        and public.is_staff()
+      )
+      with check (
+        bucket_id in (
+          'media-public','gallery','avatars',
+          'media-private','certificates','documents'
+        )
+        and public.is_staff()
+      );
+  exception when duplicate_object then null;
+  end;
 
-  -- admin delete
   begin
-    execute $p$
-      create policy "media admin delete" on storage.objects
+    create policy "media admin delete" on storage.objects
       for delete to authenticated
-      using (bucket_id = any($1) and public.is_admin())
-    $p$ using managed_buckets;
-  exception when duplicate_object then null; end;
+      using (
+        bucket_id in (
+          'media-public','gallery','avatars',
+          'media-private','certificates','documents'
+        )
+        and public.is_admin()
+      );
+  exception when duplicate_object then null;
+  end;
 end $$;
 
 -- ----------------------------------------------------------------------------
