@@ -20,6 +20,11 @@ export interface DashboardStats {
   achievements: number;
   programs: number;
   pendingApprovals: number;
+  magazineDrafts: number;
+  magazineInReview: number;
+  magazineCommentsPending: number;
+  activeElections: number;
+  nominationsSubmitted: number;
 }
 
 export interface DashboardData {
@@ -42,6 +47,11 @@ const EMPTY: DashboardData = {
     achievements: 0,
     programs: 0,
     pendingApprovals: 0,
+    magazineDrafts: 0,
+    magazineInReview: 0,
+    magazineCommentsPending: 0,
+    activeElections: 0,
+    nominationsSubmitted: 0,
   },
   recentAudit: [],
   suggestionsByStatus: [],
@@ -69,6 +79,11 @@ export async function getDashboardData(): Promise<DashboardData> {
     recAch,
     recBadge,
     submittedSug,
+    magazineDrafts,
+    magazineInReview,
+    magazineCommentsPending,
+    activeElections,
+    nominationsSubmitted,
   ] = await Promise.all([
     headCount(() =>
       supabase.from("users").select("*", { count: "exact", head: true }).eq("role", "member")
@@ -110,6 +125,30 @@ export async function getDashboardData(): Promise<DashboardData> {
     headCount(() =>
       supabase.from("suggestions").select("*", { count: "exact", head: true }).eq("status", "submitted")
     ),
+    headCount(() =>
+      supabase.from("magazine_articles").select("*", { count: "exact", head: true }).eq("status", "draft")
+    ),
+    headCount(() =>
+      supabase
+        .from("magazine_articles")
+        .select("*", { count: "exact", head: true })
+        .in("status", ["review", "revision_required"])
+    ),
+    headCount(() =>
+      supabase.from("magazine_comments").select("*", { count: "exact", head: true }).eq("status", "pending")
+    ),
+    headCount(() =>
+      supabase
+        .from("elections")
+        .select("*", { count: "exact", head: true })
+        .in("status", ["nominations", "voting", "closed"])
+    ),
+    headCount(() =>
+      supabase
+        .from("candidate_nominations")
+        .select("*", { count: "exact", head: true })
+        .in("status", ["submitted", "under_review"])
+    ),
   ]);
 
   const [{ data: audit }, { data: sugStatuses }, { data: actStatuses }, { data: recent }] =
@@ -147,7 +186,13 @@ export async function getDashboardData(): Promise<DashboardData> {
       badgesAwarded,
       achievements,
       programs,
-      pendingApprovals: recAch + recBadge + submittedSug,
+      pendingApprovals:
+        recAch + recBadge + submittedSug + magazineInReview + magazineCommentsPending + nominationsSubmitted,
+      magazineDrafts,
+      magazineInReview,
+      magazineCommentsPending,
+      activeElections,
+      nominationsSubmitted,
     },
     recentAudit: (audit as AuditLogsRow[] | null) ?? [],
     suggestionsByStatus: (

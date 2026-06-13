@@ -1,0 +1,125 @@
+/* =============================================================================
+   MIDNIGHT PRESTIGE — Admin Operating System theme (Phase 13)
+   -----------------------------------------------------------------------------
+   Scoped to `.admin-os` (set on the AdminShell root). Re-points the SEMANTIC
+   tokens to an always-dark, executive palette so every admin page — built on
+   semantic tokens — adopts the look at once, independent of the public
+   light/dark toggle. No component markup needs to change.
+   ========================================================================== */
+
+.admin-os {
+  /* Surfaces — midnight blue / deep plum / card */
+  --bg: #0b132b;
+  --bg-subtle: #16213e;
+  --surface: #16213e;
+  --surface-2: #1b2a4a;
+
+  /* Text — platinum, never pure white */
+  --ink: #f4f4f6;
+  --ink-inverse: #0b132b;
+  --soft: #c9ccd3;
+
+  /* Hairlines */
+  --line: rgb(255 255 255 / 0.08);
+  --line-strong: rgb(255 255 255 / 0.16);
+
+  /* Focus */
+  --ring: #c9ccd3;
+  --ring-offset: #0b132b;
+
+  /* Primary action = refined muted indigo with platinum text. A near-white
+     fill (platinum) washed labels out, so primary buttons/active pills use a
+     muted fill + platinum text — legible, clearly "active", still not bright.
+     Note: --primary-active doubles as the TEXT color of soft chips/badges, so
+     it stays light (silver). */
+  --primary: #33406a;
+  --primary-hover: #3d4c7d;
+  --primary-active: #c9ccd3;
+  --primary-soft: rgb(124 142 214 / 0.16);
+  --on-primary: #f4f4f6;
+
+  /* Secondary = soft silver */
+  --secondary: #c9ccd3;
+  --secondary-hover: #e5e5e5;
+  --secondary-active: #aab0bb;
+  --secondary-soft: rgb(255 255 255 / 0.06);
+  --on-secondary: #0b132b;
+
+  /* Accent kept warm for recognition, tuned for dark */
+  --accent: #fbbf24;
+  --accent-hover: #fcd34d;
+  --accent-active: #f59e0b;
+  --accent-soft: rgb(251 191 36 / 0.16);
+  --on-accent: #0b132b;
+
+  /* Status — dark-tuned translucent backgrounds */
+  --success: #22c55e;
+  --success-bg: rgb(34 197 94 / 0.16);
+  --warning: #f59e0b;
+  --warning-bg: rgb(245 158 11 / 0.16);
+  --danger: #ef4444;
+  --danger-bg: rgb(239 68 68 / 0.18);
+  --info: #60a5fa;
+  --info-bg: rgb(96 165 250 / 0.16);
+
+  /* Glass */
+  --glass-bg: rgb(255 255 255 / 0.04);
+  --glass-border: rgb(255 255 255 / 0.08);
+
+  /* Depth — soft layered shadows read as elevation/glow on dark */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-md: 0 8px 24px -6px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 20px 48px -12px rgb(0 0 0 / 0.6);
+  --shadow-xl: 0 32px 64px -16px rgb(0 0 0 / 0.7);
+  --shadow-glow: 0 0 0 1px rgb(255 255 255 / 0.06), 0 12px 40px -8px rgb(0 0 0 / 0.6);
+
+  color: var(--ink);
+  background-color: var(--bg);
+}
+
+/* Ambient aurora + grain behind the workspace (decorative, fixed, behind all) */
+.admin-os::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(50% 40% at 12% 0%, rgb(46 26 71 / 0.55) 0%, transparent 60%),
+    radial-gradient(45% 45% at 100% 10%, rgb(37 99 235 / 0.18) 0%, transparent 55%),
+    radial-gradient(40% 45% at 85% 100%, rgb(46 26 71 / 0.4) 0%, transparent 60%);
+}
+.admin-os > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Legible status text on the dark palette (the badge variants hard-code these
+   navy-on-light combos; lift them on midnight). Scoped to admin only. */
+.admin-os .text-emerald-700 { color: #6ee7b7; }
+.admin-os .text-gold-700 { color: #fcd34d; }
+.admin-os .text-danger { color: #fca5a5; }
+
+/* Executive navigation type — uppercase, tracked, calm. */
+.admin-os .nav-label {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* Section eyebrow helper */
+.admin-os .os-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.7rem;
+  color: var(--soft);
+}
+
+/* Inputs/selects pick up the dark surface automatically via tokens; ensure
+   native selects render dark control chrome too. */
+.admin-os select,
+.admin-os input,
+.admin-os textarea {
+  color-scheme: dark;
+}

@@ -32,6 +32,20 @@
   --emerald-300: #6ee7b7;
   --emerald-100: #d1fae5;
 
+  /* --- Royal blue (secondary action, trust, links) ---------------------- */
+  --royal-800: #1e3a8a;
+  --royal-700: #1d4ed8;
+  --royal-600: #2563eb;
+  --royal-500: #3b82f6;
+  --royal-400: #60a5fa;
+  --royal-100: #dbeafe;
+
+  /* --- Indigo / cyan (gradient partners only) --------------------------- */
+  --indigo-600: #4f46e5;
+  --violet-600: #7c3aed;
+  --cyan-500: #06b6d4;
+  --orange-500: #f97316;
+
   /* --- Gold (highlight, recognition, energy) ---------------------------- */
   --gold-700: #b45309;
   --gold-600: #d97706;
@@ -49,8 +63,8 @@
   --slate-600: #475569;
 
   /* --- Functional (status) — derived from palette, AA-safe -------------- */
-  --success-500: var(--emerald-600);
-  --success-100: var(--emerald-100);
+  --success-500: #16a34a;        /* #22C55E family, AA on white text combos */
+  --success-100: #dcfce7;
   --warning-500: var(--gold-600);
   --warning-100: var(--gold-100);
   --danger-500: #dc2626;
@@ -73,7 +87,9 @@
   --ink: var(--navy-800);       /* primary text / headings                 */
   --soft: var(--navy-400);      /* secondary / muted text                  */
   --primary: var(--emerald-500); /* primary brand / actions                */
+  --secondary: var(--royal-600); /* secondary brand (royal blue)           */
   --accent: var(--gold-500);    /* highlight / recognition                 */
+  --highlight: var(--gold-400); /* premium-gold emphasis (#FBBF24)         */
   --line: var(--slate-200);     /* borders, dividers, inputs               */
 
   /* --- Extended semantic set (derived, for component states) ------------ */
@@ -90,7 +106,26 @@
   --accent-soft: var(--gold-100);
   /* On-accent text — NEVER white on gold (a11y rule) */
   --on-accent: var(--navy-800);
+  /* Royal-blue secondary states. White text on royal blue passes AA. */
+  --secondary-hover: var(--royal-700);
+  --secondary-active: var(--royal-800);
+  --secondary-soft: var(--royal-100);
+  --on-secondary: var(--white);
   --line-strong: var(--slate-300);
+
+  /* --- Glassmorphism (navigation, dialogs, floating cards) -------------- */
+  --glass-bg: rgb(255 255 255 / 0.7);
+  --glass-border: rgb(255 255 255 / 0.55);
+  --glass-blur: 14px;
+
+  /* --- Gradients (emphasis only — never overuse) ------------------------ */
+  --gradient-brand: linear-gradient(135deg, var(--royal-600) 0%, var(--violet-600) 100%);
+  --gradient-emerald-cyan: linear-gradient(135deg, var(--emerald-500) 0%, var(--cyan-500) 100%);
+  --gradient-gold-orange: linear-gradient(135deg, var(--gold-400) 0%, var(--orange-500) 100%);
+  --gradient-navy-indigo: linear-gradient(135deg, var(--navy-800) 0%, var(--indigo-600) 100%);
+  --gradient-aurora: radial-gradient(60% 70% at 20% 10%, rgb(37 99 235 / 0.18) 0%, transparent 60%),
+                     radial-gradient(50% 60% at 85% 15%, rgb(16 185 129 / 0.16) 0%, transparent 55%),
+                     radial-gradient(50% 60% at 60% 90%, rgb(124 58 237 / 0.12) 0%, transparent 60%);
 
   /* Focus ring — high-contrast, used on all interactive controls */
   --ring: var(--emerald-600);
@@ -114,9 +149,9 @@
   /* --- Typography: families ------------------------------------------- */
   /* font-* CSS vars are provided by next/font in layout.tsx:
      --font-bricolage, --font-jakarta, --font-devanagari                  */
-  --font-display: var(--font-bricolage), "Bricolage Grotesque", system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-bricolage), "Space Grotesk", system-ui, sans-serif;
   --font-heading: var(--font-bricolage), "Bricolage Grotesque", system-ui, sans-serif;
-  --font-body: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: var(--font-jakarta), var(--font-inter), "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
   --font-nepali: var(--font-devanagari), "Noto Sans Devanagari", sans-serif;
 
   /* --- Typography: fluid sizes (clamp: min, preferred, max) ------------ */
@@ -144,36 +179,51 @@
   --tracking-normal: 0;
   --tracking-wide: 0.04em;
 
-  /* --- Spacing scale (8pt rhythm) ------------------------------------- */
-  --sp-1: 0.5rem;   /*  8px */
-  --sp-2: 1rem;     /* 16px */
-  --sp-3: 1.5rem;   /* 24px */
-  --sp-4: 2rem;     /* 32px */
-  --sp-5: 3rem;     /* 48px */
-  --sp-6: 5rem;     /* 80px */
+  /* --- Spacing scale (4px base rhythm) -------------------------------- */
+  --sp-0-5: 0.25rem; /*  4px */
+  --sp-1: 0.5rem;    /*  8px */
+  --sp-1-5: 0.75rem; /* 12px */
+  --sp-2: 1rem;      /* 16px */
+  --sp-2-5: 1.25rem; /* 20px */
+  --sp-3: 1.5rem;    /* 24px */
+  --sp-4: 2rem;      /* 32px */
+  --sp-5: 3rem;      /* 48px */
+  --sp-6: 5rem;      /* 80px */
 
-  /* --- Radius --------------------------------------------------------- */
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
-  --radius-xl: 32px;
+  /* --- Radius (premium, generous rounding) ---------------------------- */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 20px;   /* cards */
+  --radius-xl: 24px;   /* dialogs, large surfaces */
+  --radius-2xl: 32px;  /* hero / feature panels */
+  --radius-button: 14px;
   --radius-pill: 999px;
 
-  /* --- Elevation (subtle, tinted with navy — no heavy glassmorphism) -- */
-  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.06),
-               0 1px 3px 0 rgb(15 23 42 / 0.05);
-  --shadow-md: 0 4px 6px -2px rgb(15 23 42 / 0.07),
-               0 10px 20px -4px rgb(15 23 42 / 0.08);
-  --shadow-lg: 0 12px 24px -8px rgb(15 23 42 / 0.12),
-               0 24px 48px -12px rgb(15 23 42 / 0.14);
+  /* --- Elevation (soft, layered — cards float naturally) -------------- */
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.04),
+               0 1px 3px 0 rgb(15 23 42 / 0.06);
+  --shadow-md: 0 2px 4px -1px rgb(15 23 42 / 0.05),
+               0 8px 16px -4px rgb(15 23 42 / 0.08),
+               0 16px 32px -8px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 4px 8px -2px rgb(15 23 42 / 0.06),
+               0 16px 32px -8px rgb(15 23 42 / 0.12),
+               0 32px 64px -16px rgb(15 23 42 / 0.14);
+  --shadow-xl: 0 8px 16px -4px rgb(15 23 42 / 0.08),
+               0 24px 48px -12px rgb(15 23 42 / 0.16),
+               0 48px 96px -24px rgb(15 23 42 / 0.18);
+  --shadow-glow: 0 0 0 1px rgb(37 99 235 / 0.12),
+                 0 8px 30px -6px rgb(37 99 235 / 0.25);
   --shadow-focus: 0 0 0 3px rgb(5 150 105 / 0.35);
 
-  /* --- Motion --------------------------------------------------------- */
+  /* --- Motion (150 / 200 / 250 / 300ms tiers) ------------------------- */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-instant: 0.15s;
   --duration-fast: 0.2s;
-  --duration-base: 0.45s;
-  --duration-slow: 0.8s;
+  --duration-snappy: 0.25s;
+  --duration-base: 0.3s;
+  --duration-slow: 0.5s;
 
   /* --- Layout --------------------------------------------------------- */
   --container-max: 80rem;   /* 1280px */
@@ -188,15 +238,38 @@
    stay identical. Enable later by toggling [data-theme="dark"] on <html>.
    ========================================================================== */
 [data-theme="dark"] {
-  --bg: var(--navy-900);
-  --bg-subtle: var(--navy-800);
-  --surface: var(--navy-800);
+  /* Premium dark — deep navy, never pure black. */
+  --bg: #070b16;
+  --bg-subtle: var(--navy-900);
+  --surface: #0f1729;          /* slightly lifted from bg for layering */
   --surface-2: var(--navy-700);
   --ink: var(--slate-50);
   --soft: var(--slate-400);
-  --line: var(--navy-700);
-  --line-strong: var(--navy-600);
-  --ring-offset: var(--navy-900);
+  --line: rgb(148 163 184 / 0.14);
+  --line-strong: rgb(148 163 184 / 0.26);
+  --ring-offset: #070b16;
+  --secondary: var(--royal-500);
+  --secondary-soft: rgb(37 99 235 / 0.2);
+  --primary-soft: rgb(16 185 129 / 0.16);
+  --accent-soft: rgb(245 158 11 / 0.16);
+  /* `*-active` doubles as the TEXT color of soft chips/badges; the light-theme
+     values (emerald-700 / gold-700 / royal-800) are too dark to read on dark
+     surfaces, so lift them for dark mode. */
+  --primary-active: var(--emerald-400);
+  --accent-active: var(--gold-400);
+  --secondary-active: var(--royal-400);
+  --success-bg: rgb(34 197 94 / 0.16);
+  --warning-bg: rgb(245 158 11 / 0.16);
+  --danger-bg: rgb(239 68 68 / 0.18);
+  --info-bg: rgb(2 132 199 / 0.18);
+  /* Glass adapts to dark surfaces */
+  --glass-bg: rgb(15 23 41 / 0.6);
+  --glass-border: rgb(148 163 184 / 0.16);
+  /* Soften shadows on dark (light blur reads as glow) */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 12px 32px -8px rgb(0 0 0 / 0.55);
+  --shadow-xl: 0 24px 64px -16px rgb(0 0 0 / 0.6);
   /* primary/accent and the on-* rules stay the same — navy text on emerald/gold
      remains correct in dark mode too. */
 }

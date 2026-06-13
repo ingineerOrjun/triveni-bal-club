@@ -69,6 +69,24 @@ export type NominationStatus =
   | "rejected"
   | "withdrawn";
 export type CommitteeMemberStatus = "active" | "resigned" | "replaced";
+export type ArticleStatus =
+  | "draft"
+  | "review"
+  | "revision_required"
+  | "approved"
+  | "scheduled"
+  | "published"
+  | "archived";
+export type MagazineCommentStatus = "pending" | "approved" | "rejected";
+export type MagazineReaction = "like" | "love" | "inspiring" | "creative";
+export type ReviewDecision = "approve" | "reject" | "revise";
+export type ContributorType =
+  | "student"
+  | "teacher"
+  | "staff"
+  | "alumni"
+  | "guest"
+  | "club_member";
 
 /* ------------------------------- users ----------------------------------- */
 export type UsersRow = {
@@ -174,6 +192,7 @@ export type ActivityRow = {
   description_ne: string | null;
   category_id: string | null;
   cover_url: string | null;
+  gallery: string[];
   status: ContentStatus;
   starts_on: string | null;
   ends_on: string | null;
@@ -191,6 +210,7 @@ export type ActivityInsert = {
   description_ne?: string | null;
   category_id?: string | null;
   cover_url?: string | null;
+  gallery?: string[];
   status?: ContentStatus;
   starts_on?: string | null;
   ends_on?: string | null;
@@ -231,6 +251,7 @@ export type EventRow = {
   ends_at: string | null;
   capacity: number | null;
   registration_deadline: string | null;
+  gallery: string[];
   status: ContentStatus;
   created_by: string | null;
   published_at: string | null;
@@ -249,6 +270,7 @@ export type EventInsert = {
   ends_at?: string | null;
   capacity?: number | null;
   registration_deadline?: string | null;
+  gallery?: string[];
   status?: ContentStatus;
   created_by?: string | null;
   published_at?: string | null;
@@ -1359,6 +1381,284 @@ export type CommitteeAssignmentInsert = {
 };
 export type CommitteeAssignmentUpdate = Partial<CommitteeAssignmentInsert>;
 
+/* ------------------------------- magazine --------------------------------- */
+export type MagazineCategoryRow = {
+  id: string;
+  name: string;
+  slug: string;
+  color: string | null;
+  icon: string | null;
+  sort_order: number;
+  created_at: string;
+};
+export type MagazineCategoryInsert = {
+  id?: string;
+  name: string;
+  slug: string;
+  color?: string | null;
+  icon?: string | null;
+  sort_order?: number;
+  created_at?: string;
+};
+export type MagazineCategoryUpdate = Partial<MagazineCategoryInsert>;
+
+export type MagazineEditionRow = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  cover_image: string | null;
+  issue_number: number | null;
+  volume: number | null;
+  status: ContentStatus;
+  published_at: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string | null;
+};
+export type MagazineEditionInsert = {
+  id?: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  cover_image?: string | null;
+  issue_number?: number | null;
+  volume?: number | null;
+  status?: ContentStatus;
+  published_at?: string | null;
+  seo_title?: string | null;
+  seo_description?: string | null;
+  created_by?: string | null;
+  created_at?: string;
+  updated_at?: string | null;
+};
+export type MagazineEditionUpdate = Partial<MagazineEditionInsert>;
+
+export type MagazineArticleRow = {
+  id: string;
+  edition_id: string | null;
+  category_id: string | null;
+  contributor_id: string | null;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string | null;
+  cover_image: string | null;
+  featured: boolean;
+  status: ArticleStatus;
+  reading_time: number;
+  views: number;
+  likes: number;
+  seo_title: string | null;
+  seo_description: string | null;
+  published_at: string | null;
+  scheduled_at: string | null;
+  author_id: string;
+  editor_id: string | null;
+  created_at: string;
+  updated_at: string | null;
+};
+export type MagazineArticleInsert = {
+  id?: string;
+  edition_id?: string | null;
+  category_id?: string | null;
+  contributor_id?: string | null;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  content?: string | null;
+  cover_image?: string | null;
+  featured?: boolean;
+  status?: ArticleStatus;
+  reading_time?: number;
+  views?: number;
+  likes?: number;
+  seo_title?: string | null;
+  seo_description?: string | null;
+  published_at?: string | null;
+  scheduled_at?: string | null;
+  author_id: string;
+  editor_id?: string | null;
+  created_at?: string;
+  updated_at?: string | null;
+};
+export type MagazineArticleUpdate = Partial<MagazineArticleInsert>;
+
+export type MagazineArticleBlockRow = {
+  id: string;
+  article_id: string;
+  sort_order: number;
+  block_type: string;
+  hidden: boolean;
+  data: Record<string, unknown>;
+  created_at: string;
+};
+export type MagazineArticleBlockInsert = {
+  id?: string;
+  article_id: string;
+  sort_order?: number;
+  block_type: string;
+  hidden?: boolean;
+  data?: Record<string, unknown>;
+  created_at?: string;
+};
+export type MagazineArticleBlockUpdate = Partial<MagazineArticleBlockInsert>;
+
+export type MagazineArticleGalleryRow = {
+  id: string;
+  article_id: string;
+  media_id: string | null;
+  media_url: string | null;
+  sort_order: number;
+  caption: string | null;
+  created_at: string;
+};
+export type MagazineArticleGalleryInsert = {
+  id?: string;
+  article_id: string;
+  media_id?: string | null;
+  media_url?: string | null;
+  sort_order?: number;
+  caption?: string | null;
+  created_at?: string;
+};
+export type MagazineArticleGalleryUpdate = Partial<MagazineArticleGalleryInsert>;
+
+export type MagazineCommentRow = {
+  id: string;
+  article_id: string;
+  user_id: string;
+  content: string;
+  status: MagazineCommentStatus;
+  created_at: string;
+};
+export type MagazineCommentInsert = {
+  id?: string;
+  article_id: string;
+  user_id: string;
+  content: string;
+  status?: MagazineCommentStatus;
+  created_at?: string;
+};
+export type MagazineCommentUpdate = Partial<MagazineCommentInsert>;
+
+export type MagazineBookmarkRow = {
+  id: string;
+  article_id: string;
+  user_id: string;
+  created_at: string;
+};
+export type MagazineBookmarkInsert = {
+  id?: string;
+  article_id: string;
+  user_id: string;
+  created_at?: string;
+};
+export type MagazineBookmarkUpdate = Partial<MagazineBookmarkInsert>;
+
+export type MagazineReactionRow = {
+  id: string;
+  article_id: string;
+  user_id: string;
+  reaction: MagazineReaction;
+  created_at: string;
+};
+export type MagazineReactionInsert = {
+  id?: string;
+  article_id: string;
+  user_id: string;
+  reaction?: MagazineReaction;
+  created_at?: string;
+};
+export type MagazineReactionUpdate = Partial<MagazineReactionInsert>;
+
+export type MagazineEditorReviewRow = {
+  id: string;
+  article_id: string;
+  reviewer_id: string | null;
+  remarks: string | null;
+  decision: ReviewDecision;
+  created_at: string;
+};
+export type MagazineEditorReviewInsert = {
+  id?: string;
+  article_id: string;
+  reviewer_id?: string | null;
+  remarks?: string | null;
+  decision: ReviewDecision;
+  created_at?: string;
+};
+export type MagazineEditorReviewUpdate = Partial<MagazineEditorReviewInsert>;
+
+export type MagazineArticleVersionRow = {
+  id: string;
+  article_id: string;
+  version: number;
+  snapshot: Record<string, unknown>;
+  created_by: string | null;
+  created_at: string;
+};
+export type MagazineArticleVersionInsert = {
+  id?: string;
+  article_id: string;
+  version?: number;
+  snapshot?: Record<string, unknown>;
+  created_by?: string | null;
+  created_at?: string;
+};
+export type MagazineArticleVersionUpdate = Partial<MagazineArticleVersionInsert>;
+
+/* ------------------------------ contributors ------------------------------ */
+export type ContributorRow = {
+  id: string;
+  user_id: string | null;
+  type: ContributorType;
+  slug: string;
+  display_name: string;
+  profile_photo: string | null;
+  cover_photo: string | null;
+  headline: string | null;
+  bio: string | null;
+  class_level: string | null;
+  section: string | null;
+  department: string | null;
+  graduation_year: number | null;
+  organization: string | null;
+  designation: string | null;
+  website: string | null;
+  social_links: Record<string, unknown>;
+  featured: boolean;
+  verified: boolean;
+  created_at: string;
+  updated_at: string | null;
+};
+export type ContributorInsert = {
+  id?: string;
+  user_id?: string | null;
+  type?: ContributorType;
+  slug: string;
+  display_name: string;
+  profile_photo?: string | null;
+  cover_photo?: string | null;
+  headline?: string | null;
+  bio?: string | null;
+  class_level?: string | null;
+  section?: string | null;
+  department?: string | null;
+  graduation_year?: number | null;
+  organization?: string | null;
+  designation?: string | null;
+  website?: string | null;
+  social_links?: Record<string, unknown>;
+  featured?: boolean;
+  verified?: boolean;
+  created_at?: string;
+  updated_at?: string | null;
+};
+export type ContributorUpdate = Partial<ContributorInsert>;
+
 /* ------------------------------- schema ----------------------------------- */
 export type Database = {
   public: {
@@ -1705,6 +2005,72 @@ export type Database = {
         Update: CommitteeAssignmentUpdate;
         Relationships: [];
       };
+      magazine_categories: {
+        Row: MagazineCategoryRow;
+        Insert: MagazineCategoryInsert;
+        Update: MagazineCategoryUpdate;
+        Relationships: [];
+      };
+      magazine_editions: {
+        Row: MagazineEditionRow;
+        Insert: MagazineEditionInsert;
+        Update: MagazineEditionUpdate;
+        Relationships: [];
+      };
+      magazine_articles: {
+        Row: MagazineArticleRow;
+        Insert: MagazineArticleInsert;
+        Update: MagazineArticleUpdate;
+        Relationships: [];
+      };
+      magazine_article_blocks: {
+        Row: MagazineArticleBlockRow;
+        Insert: MagazineArticleBlockInsert;
+        Update: MagazineArticleBlockUpdate;
+        Relationships: [];
+      };
+      magazine_article_gallery: {
+        Row: MagazineArticleGalleryRow;
+        Insert: MagazineArticleGalleryInsert;
+        Update: MagazineArticleGalleryUpdate;
+        Relationships: [];
+      };
+      magazine_comments: {
+        Row: MagazineCommentRow;
+        Insert: MagazineCommentInsert;
+        Update: MagazineCommentUpdate;
+        Relationships: [];
+      };
+      magazine_bookmarks: {
+        Row: MagazineBookmarkRow;
+        Insert: MagazineBookmarkInsert;
+        Update: MagazineBookmarkUpdate;
+        Relationships: [];
+      };
+      magazine_reactions: {
+        Row: MagazineReactionRow;
+        Insert: MagazineReactionInsert;
+        Update: MagazineReactionUpdate;
+        Relationships: [];
+      };
+      magazine_editor_reviews: {
+        Row: MagazineEditorReviewRow;
+        Insert: MagazineEditorReviewInsert;
+        Update: MagazineEditorReviewUpdate;
+        Relationships: [];
+      };
+      magazine_article_versions: {
+        Row: MagazineArticleVersionRow;
+        Insert: MagazineArticleVersionInsert;
+        Update: MagazineArticleVersionUpdate;
+        Relationships: [];
+      };
+      contributors: {
+        Row: ContributorRow;
+        Insert: ContributorInsert;
+        Update: ContributorUpdate;
+        Relationships: [];
+      };
     };
     Views: Record<never, never>;
     Functions: {
@@ -1735,6 +2101,14 @@ export type Database = {
           valid: boolean;
         }[];
       };
+      magazine_increment_view: {
+        Args: { p_article: string };
+        Returns: undefined;
+      };
+      magazine_search: {
+        Args: { p_query: string; p_limit?: number; p_offset?: number };
+        Returns: { id: string; rank: number }[];
+      };
     };
     Enums: {
       user_role: UserRole;
@@ -1756,6 +2130,7 @@ export type Database = {
       election_status: ElectionStatus;
       nomination_status: NominationStatus;
       committee_member_status: CommitteeMemberStatus;
+      contributor_type: ContributorType;
     };
     CompositeTypes: Record<never, never>;
   };

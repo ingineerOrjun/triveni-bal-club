@@ -39,9 +39,9 @@ export default async function PortalElectionsPage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <ElectionStatusBadge status={e.status} />
                   {e.status === "nominations" ? (
-                    <Button asChild variant="outline" size="sm">
+                    <Button asChild variant="primary" size="sm">
                       <Link href={`/portal/elections/${e.slug}/nominate`}>
-                        <Megaphone className="size-4" /> Stand
+                        <Megaphone className="size-4" /> File nomination
                       </Link>
                     </Button>
                   ) : null}

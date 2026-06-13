@@ -107,7 +107,7 @@ export function CommandPalette() {
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search members, activities, events, suggestions…"
+              placeholder="Search members, events, magazine, elections, pages…"
               aria-label="Search"
               className="h-9 flex-1 bg-transparent text-body text-ink outline-none placeholder:text-soft"
             />

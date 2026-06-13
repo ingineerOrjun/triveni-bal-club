@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Megaphone, CheckCircle2 } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth/session";
-import { getElectionBySlug, hasVoted, getReceipt, getResults } from "@/lib/elections/queries";
+import { getElectionBySlug, hasVoted, getReceipt, getResults, listMyNominations } from "@/lib/elections/queries";
 import { PortalPageHeader } from "@/components/portal/page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ElectionStatusBadge } from "@/components/elections/election-badges";
+import { ElectionStatusBadge, NominationStatusBadge } from "@/components/elections/election-badges";
 import { ElectionTimeline } from "@/components/elections/election-timeline";
 import { VotingBooth } from "@/components/elections/voting-booth";
 import { VoteReceipt } from "@/components/elections/vote-receipt";
@@ -31,6 +31,9 @@ export default async function PortalElectionDetailPage({
   const receipt = voted && user ? await getReceipt(election.id, user.id) : null;
   const showResults = election.status === "results_published" || election.status === "archived";
   const results = showResults ? await getResults(election.id) : [];
+  const myNoms =
+    user && election.status === "nominations" ? await listMyNominations(user.id) : [];
+  const myNom = myNoms.find((n) => n.election_id === election.id) ?? null;
 
   return (
     <>
@@ -40,6 +43,40 @@ export default async function PortalElectionDetailPage({
 
       <PortalPageHeader title={election.title} action={<ElectionStatusBadge status={election.status} />} />
       <div className="mb-sp-4"><ElectionTimeline status={election.status} /></div>
+
+      {/* Nominations open — prominent, one-click filing */}
+      {election.status === "nominations" ? (
+        <Card glass className="mb-sp-5 flex flex-col gap-sp-2 p-sp-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-button bg-accent-soft text-accent-active">
+              <Megaphone className="size-5" />
+            </span>
+            <div>
+              <h2 className="font-heading text-h3 font-bold text-ink">Nominations are open</h2>
+              <p className="text-body text-soft">
+                Stand for a position — it only takes a minute.
+              </p>
+            </div>
+          </div>
+          {myNom ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 text-caption text-soft">
+                <CheckCircle2 className="size-4 text-success" /> Your nomination
+              </span>
+              <NominationStatusBadge status={myNom.status} />
+              <Button asChild variant="outline" size="sm">
+                <Link href={`/portal/elections/${slug}/nominate`}>Update</Link>
+              </Button>
+            </div>
+          ) : (
+            <Button asChild variant="primary" size="lg" className="shrink-0">
+              <Link href={`/portal/elections/${slug}/nominate`}>
+                <Megaphone className="size-4" /> File your nomination
+              </Link>
+            </Button>
+          )}
+        </Card>
+      ) : null}
 
       {/* Voting / receipt */}
       {election.status === "voting" ? (

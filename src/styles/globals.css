@@ -11,6 +11,7 @@
 @import "tailwindcss";
 @import "./tokens.css";
 @import "./theme.css";
+@import "./admin.css";
 
 /* Dark theme is opt-in via [data-theme="dark"] (defined in tokens.css).
    Register the variant so `dark:` utilities work if ever needed. */
@@ -140,4 +141,293 @@
     white-space: nowrap;
     border-width: 0;
   }
+
+  /* ---------------------------------------------------------------------------
+     MOTION SYSTEM — tasteful, premium, reduced-motion-safe (the base layer
+     already collapses all animation/transition durations for users who prefer
+     reduced motion, so these utilities degrade gracefully).
+     ------------------------------------------------------------------------ */
+  .animate-fade-in {
+    animation: tv-fade-in 0.4s var(--ease-out, ease-out) both;
+  }
+  .animate-slide-up {
+    animation: tv-slide-up 0.45s var(--ease-out, ease-out) both;
+  }
+  .animate-scale-in {
+    animation: tv-scale-in 0.3s var(--ease-out, ease-out) both;
+  }
+  /* Stagger children: apply to a parent grid/list of animated items */
+  .stagger-children > * {
+    animation: tv-slide-up 0.45s var(--ease-out, ease-out) both;
+  }
+  .stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+  .stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+  .stagger-children > *:nth-child(n + 6) { animation-delay: 300ms; }
+
+  /* Hover lift for interactive cards */
+  .hover-lift {
+    transition: transform 0.2s var(--ease-out, ease-out), box-shadow 0.2s var(--ease-out, ease-out);
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background-color: var(--bg-subtle);
+  }
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--surface) 65%, transparent),
+      transparent
+    );
+    animation: tv-shimmer 1.6s infinite;
+  }
+}
+
+/* =============================================================================
+   PREMIUM SURFACES — glass, gradients, reveal, microinteractions (Phase 11)
+   ========================================================================== */
+@layer utilities {
+  /* --- Glassmorphism (navigation, dialogs, floating cards) ------------- */
+  .glass {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    border: 1px solid var(--glass-border);
+  }
+  .glass-panel {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  }
+
+  /* --- Gradient backgrounds (emphasis only) ---------------------------- */
+  .bg-aurora { background-image: var(--gradient-aurora); }
+  .bg-gradient-brand { background-image: var(--gradient-brand); }
+  .bg-gradient-emerald-cyan { background-image: var(--gradient-emerald-cyan); }
+  .bg-gradient-gold-orange { background-image: var(--gradient-gold-orange); }
+  .bg-gradient-navy-indigo { background-image: var(--gradient-navy-indigo); }
+
+  /* Gradient text (clip a gradient to the glyphs) */
+  .text-gradient {
+    background-image: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-emerald {
+    background-image: var(--gradient-emerald-cyan);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Gradient border via padding-box / border-box layering */
+  .gradient-border {
+    position: relative;
+    background-clip: padding-box;
+    border: 1px solid transparent;
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    margin: -1px;
+    border-radius: inherit;
+    background: var(--gradient-brand);
+    opacity: 0;
+    transition: opacity var(--duration-snappy, 0.25s) var(--ease-out, ease-out);
+  }
+  .gradient-border:hover::before { opacity: 0.6; }
+
+  /* Decorative dotted/grid pattern (hero, section backgrounds) */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--ink) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--ink) 6%, transparent) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask-image: radial-gradient(70% 60% at 50% 30%, #000 0%, transparent 75%);
+    mask-image: radial-gradient(70% 60% at 50% 30%, #000 0%, transparent 75%);
+  }
+
+  /* --- Microinteractions ----------------------------------------------- */
+  /* Image zoom on hover (wrap an <Image> in .hover-zoom) */
+  .hover-zoom { overflow: hidden; }
+  .hover-zoom img {
+    transition: transform var(--duration-slow, 0.5s) var(--ease-out, ease-out);
+  }
+  .hover-zoom:hover img { transform: scale(1.05); }
+
+  /* Animated nav underline */
+  .nav-underline {
+    position: relative;
+  }
+  .nav-underline::after {
+    content: "";
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.35rem;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-snappy, 0.25s) var(--ease-out, ease-out);
+  }
+  .nav-underline:hover::after,
+  .nav-underline[aria-current="page"]::after { transform: scaleX(1); }
+
+  /* Scroll reveal — start hidden, JS adds .reveal-visible when in view.
+     Falls back to visible if JS never runs (no-JS / SSR). */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity var(--duration-base, 0.3s) var(--ease-out, ease-out),
+                transform var(--duration-base, 0.3s) var(--ease-out, ease-out);
+    will-change: opacity, transform;
+  }
+  .reveal-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Floating orbs for hero backgrounds */
+  .animate-float {
+    animation: tv-float 9s var(--ease-in-out, ease-in-out) infinite;
+  }
+  .animate-float-slow {
+    animation: tv-float 14s var(--ease-in-out, ease-in-out) infinite;
+  }
+}
+
+/* Smooth theme switch (color only — never animate layout) */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    transition: background-color 0.3s var(--ease-out, ease-out);
+  }
+  body,
+  .glass,
+  [class*="bg-surface"],
+  [class*="bg-background"] {
+    transition: background-color 0.3s var(--ease-out, ease-out),
+                border-color 0.3s var(--ease-out, ease-out);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .animate-float,
+  .animate-float-slow { animation: none; }
+}
+
+@keyframes tv-float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-18px) translateX(10px); }
+}
+@keyframes toast-progress {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+/* Status badge text colors are hard-coded (navy-on-light combos); lift them for
+   the dark theme so success/warning/danger chips stay legible on dark surfaces. */
+[data-theme="dark"] .text-emerald-700 { color: var(--emerald-400); }
+[data-theme="dark"] .text-gold-700 { color: var(--gold-300); }
+
+/* Floating menu surface — near-solid (no page bleed-through) + capped 12px blur.
+   The dropdown reads as a floating card, not a transparent sheet. */
+.menu-surface {
+  background-color: color-mix(in oklab, var(--surface) 97%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+}
+/* AA-contrast menu description text (light + dark). */
+.menu-desc { color: #475569; }
+[data-theme="dark"] .menu-desc { color: #c9ccd3; }
+
+/* =============================================================================
+   PROSE-ARTICLE — immersive magazine reading typography (public article page)
+   Refines the block-rendered content: comfortable measure, generous rhythm,
+   an elegant drop cap, and editorial pull-quotes.
+   ========================================================================== */
+.prose-article {
+  font-size: 1.1875rem;        /* ~19px base read */
+  line-height: 1.8;
+  color: var(--ink);
+}
+/* Vertical rhythm between blocks (the renderer stacks them in a flex column) */
+.prose-article > div {
+  gap: 1.6rem;
+}
+.prose-article p {
+  letter-spacing: 0.002em;
+  text-wrap: pretty;
+}
+/* Drop cap — only when the article opens with a paragraph */
+.prose-article > div > p:first-child::first-letter {
+  float: left;
+  margin: 0.02em 0.12em 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 3.6em;
+  line-height: 0.72;
+  color: var(--primary-active);
+}
+/* Headings get air above them */
+.prose-article h2 { margin-top: 0.8rem; letter-spacing: -0.01em; }
+.prose-article h3 { margin-top: 0.4rem; }
+/* Editorial pull-quote */
+.prose-article blockquote {
+  position: relative;
+  margin: 0.5rem 0;
+  padding: 0.25rem 0 0.25rem 1.5rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--ink);
+}
+/* Figure captions read as quiet, centered annotations */
+.prose-article figcaption {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-style: italic;
+}
+/* Inline links within prose */
+.prose-article a:not([class]) {
+  color: var(--secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+@keyframes tv-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes tv-slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes tv-scale-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes tv-shimmer {
+  100% { transform: translateX(100%); }
 }

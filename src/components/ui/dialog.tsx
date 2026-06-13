@@ -17,7 +17,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-50 bg-navy-900/50 backdrop-blur-[2px]",
+      "fixed inset-0 z-50 bg-navy-900/55 backdrop-blur-sm",
       "data-[state=open]:animate-overlay-in data-[state=closed]:animate-overlay-out",
       className
     )}
@@ -35,8 +35,8 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-sp-3",
-        "rounded-lg border border-line bg-surface p-sp-4 shadow-lg",
+        "fixed left-1/2 top-1/2 z-50 grid max-h-[90dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-sp-3 overflow-y-auto",
+        "rounded-xl border border-line bg-surface p-sp-4 shadow-xl",
         "data-[state=open]:animate-zoom-in data-[state=closed]:animate-zoom-out",
         className
       )}
@@ -45,7 +45,7 @@ const DialogContent = React.forwardRef<
       {children}
       <DialogPrimitive.Close
         className={cn(
-          "absolute right-4 top-4 inline-flex size-9 items-center justify-center rounded-md text-soft",
+          "absolute right-4 top-4 inline-flex size-9 items-center justify-center rounded-button text-soft",
           "transition-colors duration-fast hover:bg-background-subtle hover:text-ink",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
           "disabled:pointer-events-none"

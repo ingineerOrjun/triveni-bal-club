@@ -15,6 +15,10 @@ import {
   UserPlus,
   ClipboardCheck,
   ArrowRight,
+  Newspaper,
+  MessageSquare,
+  Vote,
+  PenSquare,
 } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getDashboardData } from "@/lib/admin/dashboard";
@@ -34,6 +38,8 @@ export const metadata: Metadata = {
 const QUICK = [
   { label: "Create event", href: "/admin/events/new", icon: CalendarPlus },
   { label: "Create activity", href: "/admin/activities/new", icon: ActivityIcon },
+  { label: "Write article", href: "/admin/magazine/articles/new", icon: PenSquare },
+  { label: "New election", href: "/admin/elections/new", icon: Vote },
   { label: "Issue certificate", href: "/admin/certificates/new", icon: Award },
   { label: "New badge", href: "/admin/badges/new", icon: ImageIcon },
   { label: "Add member", href: "/admin/members", icon: UserPlus },
@@ -64,19 +70,42 @@ export default async function AdminDashboardPage() {
         ))}
       </div>
 
-      {/* Pending approvals callout */}
+      {/* Pending approvals breakdown */}
       {stats.pendingApprovals > 0 ? (
         <Card className="mb-sp-4 border-warning/40 bg-warning-bg/40">
-          <CardContent className="flex flex-wrap items-center justify-between gap-sp-2 p-sp-3">
+          <CardContent className="flex flex-col gap-sp-2 p-sp-3">
             <span className="inline-flex items-center gap-2 font-heading font-bold text-gold-700">
               <ClipboardCheck className="size-5" />
-              {stats.pendingApprovals} item(s) awaiting review
+              {stats.pendingApprovals} item{stats.pendingApprovals === 1 ? "" : "s"} awaiting review
             </span>
-            <Button asChild variant="primary" size="sm">
-              <Link href="/admin/suggestions?status=submitted">
-                Review now <ArrowRight className="size-4" />
-              </Link>
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              {stats.magazineInReview > 0 ? (
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/admin/magazine/review">
+                    <Newspaper className="size-4" /> {stats.magazineInReview} article{stats.magazineInReview === 1 ? "" : "s"}
+                  </Link>
+                </Button>
+              ) : null}
+              {stats.magazineCommentsPending > 0 ? (
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/admin/magazine/comments">
+                    <MessageSquare className="size-4" /> {stats.magazineCommentsPending} comment{stats.magazineCommentsPending === 1 ? "" : "s"}
+                  </Link>
+                </Button>
+              ) : null}
+              {stats.nominationsSubmitted > 0 ? (
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/admin/elections">
+                    <Vote className="size-4" /> {stats.nominationsSubmitted} nomination{stats.nominationsSubmitted === 1 ? "" : "s"}
+                  </Link>
+                </Button>
+              ) : null}
+              <Button asChild variant="primary" size="sm">
+                <Link href="/admin/approvals">
+                  Open approval center <ArrowRight className="size-4" />
+                </Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
       ) : null}
@@ -91,6 +120,10 @@ export default async function AdminDashboardPage() {
         <StatCard icon={FileBadge} label="Certificates" value={stats.certificates} href="/admin/certificates" />
         <StatCard icon={BadgeCheck} label="Badges awarded" value={stats.badgesAwarded} href="/admin/badges" />
         <StatCard icon={Trophy} label="Programs" value={stats.programs} href="/admin/recognition" />
+        <StatCard icon={Newspaper} label="Magazine drafts" value={stats.magazineDrafts} href="/admin/magazine/articles?status=draft" />
+        <StatCard icon={ClipboardCheck} label="Articles in review" value={stats.magazineInReview} href="/admin/magazine/review" accent="accent" />
+        <StatCard icon={MessageSquare} label="Comments pending" value={stats.magazineCommentsPending} href="/admin/magazine/comments" />
+        <StatCard icon={Vote} label="Active elections" value={stats.activeElections} href="/admin/elections" accent="accent" />
       </div>
 
       {/* Analytics */}

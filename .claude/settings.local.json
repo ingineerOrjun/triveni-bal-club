@@ -13,7 +13,8 @@
       "Bash(npx tsc *)",
       "Bash(echo \"=== typecheck exit: $? ===\")",
       "Bash(npx tsx *)",
-      "Bash(echo \"exit=$?\")"
+      "Bash(echo \"exit=$?\")",
+      "PowerShell(if \\(Test-Path \"node_modules/.bin/tsx.cmd\" -or \\(Test-Path \"node_modules/tsx\"\\)\\) { Write-Output \"tsx: present\" } else { Write-Output \"tsx: MISSING\" }; node -e \"const p=require\\('./package.json'\\); const all={...p.dependencies,...p.devDependencies}; console.log\\('tsx:', all.tsx||'absent'\\); console.log\\('dotenv:', all.dotenv||'absent'\\)\")"
     ]
   }
 }

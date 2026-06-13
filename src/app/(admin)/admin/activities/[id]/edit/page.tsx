@@ -40,6 +40,7 @@ export default async function EditActivityPage({
             description: activity.description ?? "",
             category_id: activity.category_id ?? "",
             cover_url: activity.cover_url ?? "",
+            gallery: activity.gallery ?? [],
             starts_on: activity.starts_on ?? "",
             ends_on: activity.ends_on ?? "",
           }}

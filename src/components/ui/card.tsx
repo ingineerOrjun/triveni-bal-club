@@ -3,14 +3,23 @@ import { cn } from "@/lib/utils";
 
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { interactive?: boolean }
->(({ className, interactive = false, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & {
+    /** Lift + shadow on hover/focus-within. */
+    interactive?: boolean;
+    /** Frosted-glass surface (navigation, floating panels, stats). */
+    glass?: boolean;
+    /** Reveal a soft gradient border on hover. */
+    gradientBorder?: boolean;
+  }
+>(({ className, interactive = false, glass = false, gradientBorder = false, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border border-line bg-surface text-ink shadow-sm",
+      "rounded-lg border text-ink shadow-sm",
+      glass ? "glass" : "border-line bg-surface",
+      gradientBorder && "gradient-border",
       interactive &&
-        "transition-[box-shadow,transform] duration-fast ease-out hover:shadow-md hover:-translate-y-0.5 focus-within:shadow-md",
+        "transition-[box-shadow,transform,border-color] duration-snappy ease-out hover:shadow-lg hover:-translate-y-1 focus-within:shadow-lg",
       className
     )}
     {...props}

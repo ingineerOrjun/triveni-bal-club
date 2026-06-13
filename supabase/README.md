@@ -34,6 +34,8 @@ Migrations (run in order):
 23. `0023_cms.sql` — Visual CMS: `cms_pages`, `cms_page_versions`, `cms_menus`, `cms_menu_items` (+ `cms_page_status` enum; published pages public, staff manage).
 24. `0024_elections.sql` — Elections: `election_terms`, `elections`, `positions`, `candidate_nominations`, `votes` (anonymous), `vote_receipts`, `result_snapshots`, `committee_assignments` (+ enums).
 25. `0025_election_functions.sql` — secret-ballot `cast_vote()`, `get_election_results()`, `election_turnout()`, `has_voted()` (SECURITY DEFINER) + RLS (votes table has NO direct access).
+26. `0026_magazine.sql` — Magazine: `magazine_editions`, `magazine_categories`, `magazine_articles`, `magazine_article_blocks`, `magazine_article_gallery`, `magazine_comments`, `magazine_bookmarks`, `magazine_reactions`, `magazine_editor_reviews`, `magazine_article_versions` (+ enums; FTS index).
+27. `0027_magazine_functions.sql` — `magazine_increment_view()`, `magazine_search()` (indexed FTS), likes-sync trigger (SECURITY DEFINER) + RLS for all magazine tables.
 
 ## Enable the access-token hook (one-time, dashboard)
 

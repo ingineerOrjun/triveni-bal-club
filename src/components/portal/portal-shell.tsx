@@ -15,6 +15,7 @@ import {
   Lightbulb,
   MessageSquare,
   Vote,
+  Newspaper,
   Settings,
   ShieldCheck,
   LogOut,
@@ -47,6 +48,7 @@ const NAV = [
   { label: "Suggestions", href: "/portal/suggestions", icon: Lightbulb },
   { label: "My Ideas", href: "/portal/my-suggestions", icon: MessageSquare },
   { label: "Elections", href: "/portal/elections", icon: Vote },
+  { label: "Magazine", href: "/portal/magazine", icon: Newspaper },
   { label: "Profile", href: "/portal/profile", icon: UserRound },
   { label: "Account", href: "/settings/account", icon: Settings },
 ];
@@ -141,6 +143,46 @@ function SignOutForm({ full = false }: { full?: boolean }) {
   );
 }
 
+// Curated primary destinations for the mobile bottom bar.
+const BOTTOM_NAV = [
+  { label: "Home", href: "/portal", icon: LayoutDashboard },
+  { label: "Activities", href: "/portal/activities", icon: ActivityIcon },
+  { label: "Magazine", href: "/portal/magazine", icon: Newspaper },
+  { label: "Awards", href: "/portal/achievements", icon: Trophy },
+  { label: "Profile", href: "/portal/profile", icon: UserRound },
+];
+
+function BottomNav() {
+  const pathname = usePathname();
+  return (
+    <nav
+      aria-label="Primary"
+      className="glass fixed inset-x-0 bottom-0 z-40 flex items-stretch justify-around border-t border-line px-1 pb-[env(safe-area-inset-bottom)] lg:hidden"
+    >
+      {BOTTOM_NAV.map(({ label, href, icon: Icon }) => {
+        const active =
+          pathname === href ||
+          (href !== "/portal" && pathname.startsWith(`${href}/`));
+        return (
+          <Link
+            key={href}
+            href={href}
+            aria-current={active ? "page" : undefined}
+            className={cn(
+              "flex flex-1 flex-col items-center gap-0.5 rounded-md py-2 text-[0.7rem] font-heading font-semibold transition-colors duration-fast",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              active ? "text-primary-active" : "text-soft hover:text-ink"
+            )}
+          >
+            <Icon className="size-5" />
+            {label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
 export function PortalShell({
   user,
   children,
@@ -216,9 +258,12 @@ export function PortalShell({
       </header>
 
       {/* Main content */}
-      <main className="flex-1 px-sp-2 py-sp-4 sm:px-sp-4">
+      <main className="flex-1 px-sp-2 py-sp-4 pb-24 sm:px-sp-4 lg:pb-sp-4">
         <div className="mx-auto w-full max-w-5xl">{children}</div>
       </main>
+
+      {/* Mobile bottom navigation */}
+      <BottomNav />
     </div>
   );
 }

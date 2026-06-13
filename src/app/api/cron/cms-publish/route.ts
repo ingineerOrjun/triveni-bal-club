@@ -3,7 +3,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 /**
- * GET /api/cron/cms-publish — publishes scheduled pages whose time has arrived.
+ * GET /api/cron/cms-publish — publishes scheduled CMS pages AND scheduled
+ * magazine articles whose time has arrived.
  * Protect with CRON_SECRET (header `authorization: Bearer <secret>` or `?secret=`).
  * Wire to Vercel Cron (e.g. every 5 minutes).
  */
@@ -36,5 +37,23 @@ export async function GET(request: NextRequest) {
       .eq("id", p.id);
   }
 
-  return NextResponse.json({ ok: true, published: due.length });
+  // Scheduled magazine articles whose publish time has arrived.
+  const { data: artData } = await admin
+    .from("magazine_articles")
+    .select("id")
+    .eq("status", "scheduled")
+    .lte("scheduled_at", nowIso);
+  const dueArticles = (artData as { id: string }[] | null) ?? [];
+  for (const a of dueArticles) {
+    await admin
+      .from("magazine_articles")
+      .update({ status: "published", published_at: nowIso, scheduled_at: null })
+      .eq("id", a.id);
+  }
+
+  return NextResponse.json({
+    ok: true,
+    published: due.length,
+    articlesPublished: dueArticles.length,
+  });
 }

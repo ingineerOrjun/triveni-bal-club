@@ -13,6 +13,16 @@ import { type FormState, zodFieldErrors } from "@/lib/forms";
 import { activityInputSchema } from "./schema";
 import type { ContentStatus } from "@/types/database";
 
+function parseGallery(raw: FormDataEntryValue | null): string[] {
+  if (typeof raw !== "string" || !raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((u): u is string => typeof u === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
 function parseForm(formData: FormData) {
   return activityInputSchema.safeParse({
     title: formData.get("title"),
@@ -20,6 +30,7 @@ function parseForm(formData: FormData) {
     description: formData.get("description") ?? "",
     category_id: formData.get("category_id") ?? "",
     cover_url: formData.get("cover_url") ?? "",
+    gallery: parseGallery(formData.get("gallery")),
     starts_on: formData.get("starts_on") ?? "",
     ends_on: formData.get("ends_on") ?? "",
   });
@@ -32,6 +43,7 @@ function toRow(input: ReturnType<typeof activityInputSchema.parse>) {
     description: input.description || null,
     category_id: input.category_id || null,
     cover_url: input.cover_url || null,
+    gallery: input.gallery ?? [],
     starts_on: input.starts_on || null,
     ends_on: input.ends_on || null,
   };

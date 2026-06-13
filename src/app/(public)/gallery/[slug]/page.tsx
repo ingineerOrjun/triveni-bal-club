@@ -6,7 +6,9 @@ import { getAlbumBySlug } from "@/lib/gallery/queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HeroSection } from "@/components/sections/hero-section";
-import { MediaThumb } from "@/components/media/media-thumb";
+import { GalleryViewer } from "@/components/gallery/gallery-viewer";
+import type { LightboxImage } from "@/components/gallery/lightbox";
+import { formatDate } from "@/lib/format";
 import { EmptyState } from "@/components/shared/empty-state";
 import { JsonLd, breadcrumbJsonLd } from "@/components/seo/json-ld";
 import { GalleryThumbnails } from "lucide-react";
@@ -38,6 +40,15 @@ export default async function PublicAlbumPage({
   const album = await getAlbumBySlug(slug);
   if (!album || album.status !== "published") notFound();
 
+  const images: LightboxImage[] = album.photos
+    .filter((p) => p.file?.public_url)
+    .map((p) => ({
+      src: p.file!.public_url as string,
+      alt: p.file!.alt_text ?? p.caption ?? album.title,
+      title: p.caption ?? p.file!.alt_text ?? undefined,
+      date: p.file!.created_at ? formatDate(p.file!.created_at) : undefined,
+    }));
+
   return (
     <>
       <JsonLd
@@ -61,35 +72,14 @@ export default async function PublicAlbumPage({
           </Link>
         </Button>
 
-        {album.photos.length === 0 ? (
+        {images.length === 0 ? (
           <EmptyState
             icon={GalleryThumbnails}
             title="No photos yet"
             description="This album doesn't have any photos yet."
           />
         ) : (
-          <ul className="grid grid-cols-2 gap-sp-2 sm:grid-cols-3 lg:grid-cols-4">
-            {album.photos.map((p) =>
-              p.file ? (
-                <li key={p.id}>
-                  <a
-                    href={p.file.public_url ?? "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group block overflow-hidden rounded-md border border-line bg-background-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    aria-label={p.caption ?? p.file.alt_text ?? p.file.filename}
-                  >
-                    <span className="block aspect-square">
-                      <MediaThumb
-                        file={p.file}
-                        className="transition-transform duration-base ease-out group-hover:scale-105"
-                      />
-                    </span>
-                  </a>
-                </li>
-              ) : null
-            )}
-          </ul>
+          <GalleryViewer images={images} />
         )}
       </section>
     </>

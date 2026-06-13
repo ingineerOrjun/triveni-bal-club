@@ -19,6 +19,7 @@ export const activityInputSchema = z
       .url("Enter a valid URL")
       .optional()
       .or(z.literal("")),
+    gallery: z.array(z.string().url()).max(30).optional(),
     starts_on: optionalDate,
     ends_on: optionalDate,
   })

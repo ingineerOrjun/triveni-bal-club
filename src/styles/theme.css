@@ -58,11 +58,25 @@
   --color-primary-soft: var(--primary-soft);
   --color-on-primary: var(--on-primary);
 
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-active: var(--secondary-active);
+  --color-secondary-soft: var(--secondary-soft);
+  --color-on-secondary: var(--on-secondary);
+
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-active: var(--accent-active);
   --color-accent-soft: var(--accent-soft);
   --color-on-accent: var(--on-accent);
+  --color-highlight: var(--highlight);
+
+  --color-royal-800: var(--royal-800);
+  --color-royal-700: var(--royal-700);
+  --color-royal-600: var(--royal-600);
+  --color-royal-500: var(--royal-500);
+  --color-royal-400: var(--royal-400);
+  --color-royal-100: var(--royal-100);
 
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
@@ -122,8 +136,11 @@
   /* ---------------------------------------------------------------------------
      SPACING SCALE  →  p-sp-1, gap-sp-3, m-sp-6, …
      ------------------------------------------------------------------------ */
+  --spacing-sp-0-5: var(--sp-0-5);
   --spacing-sp-1: var(--sp-1);
+  --spacing-sp-1-5: var(--sp-1-5);
   --spacing-sp-2: var(--sp-2);
+  --spacing-sp-2-5: var(--sp-2-5);
   --spacing-sp-3: var(--sp-3);
   --spacing-sp-4: var(--sp-4);
   --spacing-sp-5: var(--sp-5);
@@ -136,14 +153,18 @@
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-button: var(--radius-button);
   --radius-pill: var(--radius-pill);
 
   /* ---------------------------------------------------------------------------
-     ELEVATION  →  shadow-sm | md | lg
+     ELEVATION  →  shadow-sm | md | lg | xl | glow
      ------------------------------------------------------------------------ */
   --shadow-sm: var(--shadow-sm);
   --shadow-md: var(--shadow-md);
   --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-glow: var(--shadow-glow);
 
   /* ---------------------------------------------------------------------------
      LAYOUT
@@ -155,6 +176,14 @@
      ------------------------------------------------------------------------ */
   --ease-out: var(--ease-out);
   --ease-in-out: var(--ease-in-out);
+  --ease-spring: var(--ease-spring);
+
+  /* transition-duration utilities → duration-instant|fast|snappy|base|slow */
+  --transition-duration-instant: var(--duration-instant);
+  --transition-duration-fast: var(--duration-fast);
+  --transition-duration-snappy: var(--duration-snappy);
+  --transition-duration-base: var(--duration-base);
+  --transition-duration-slow: var(--duration-slow);
 
   --animate-fade-in: fade-in var(--duration-fast) var(--ease-out);
   --animate-fade-out: fade-out var(--duration-fast) var(--ease-out);

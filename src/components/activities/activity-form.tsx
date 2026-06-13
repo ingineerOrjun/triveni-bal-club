@@ -18,6 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FieldError } from "@/components/shared/field-error";
+import { MediaField } from "@/components/media/media-field";
+import { MediaMultiField } from "@/components/media/media-multi-field";
 
 export interface ActivityFormValues {
   title: string;
@@ -25,6 +27,7 @@ export interface ActivityFormValues {
   description: string;
   category_id: string;
   cover_url: string;
+  gallery: string[];
   starts_on: string;
   ends_on: string;
 }
@@ -104,17 +107,18 @@ export function ActivityForm({
           </Select>
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="cover_url">Cover image URL</Label>
-          <Input
-            id="cover_url"
-            name="cover_url"
-            type="url"
-            placeholder="https://…"
-            defaultValue={values?.cover_url}
-            aria-invalid={Boolean(state.fieldErrors?.cover_url)}
-          />
+        <div className="sm:col-span-2">
+          <MediaField name="cover_url" label="Cover image" defaultValue={values?.cover_url ?? ""} />
           <FieldError id="cover_url" message={state.fieldErrors?.cover_url} />
+        </div>
+
+        <div className="sm:col-span-2">
+          <MediaMultiField
+            name="gallery"
+            label="Photo gallery"
+            defaultValue={values?.gallery ?? []}
+            help="Add multiple photos from the Media Library — shown on the public activity page."
+          />
         </div>
 
         <div className="flex flex-col gap-1.5">
